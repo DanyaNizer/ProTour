@@ -1,0 +1,199 @@
+.header {
+    width: 100%;
+    &__top-info-bg {
+        background-color: #f9f9f9;
+    }
+    &__top-info {
+        width: 100%;
+        height: 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        @media screen and (max-width: 769px) {
+            justify-content: center;
+        }
+    }
+    &__logo {
+        overflow: hidden;
+        width: 75px;
+        margin-left: 65px;
+        @media screen and (max-width: 890px) {
+            margin-left: 20px;
+        }
+        @media screen and (max-width: 769px) {
+            margin-left: 0px;
+            margin-right: 70px;
+        }
+        @media screen and (max-width: 500px) {
+            margin: 0;
+        }
+        & img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    &__fon {
+        margin-right: 50px;
+        line-height: 30px;
+        font-size: 18rem / $rem;
+        font-family: "Proxima-Regular";
+        font-weight: 400;
+        @media screen and (max-width: 890px) {
+            margin-right: 20px;
+        }
+        @media screen and (max-width: 500px) {
+            display: none;
+        }
+    }
+    &__top-nav {
+        font-family: "Proxima-Regular";
+        font-size: 20rem / $rem;
+        & ul {
+            display: flex;
+            & li {
+                margin: 30px 25px;
+                & a {
+                    text-decoration: none;
+                    color: #000;
+                }
+            }
+        }
+        & ul {
+            @media screen and (max-width: 769px) {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                flex-direction: column;
+                z-index: 999;
+                background: #fff;
+                left: 0;
+                top: -100%;
+                align-items: center;
+                justify-content: center;
+                font-size: 40rem / $rem;
+                transition: all 0.5s linear;
+            }
+            & li {
+                margin: 30px 20px;
+            }
+        }
+        &.active {
+            @media screen and (max-width: 769px) {
+                & ul {
+                    top: 0;
+                    transition: all 0.5s linear;
+                }
+            }
+        }
+    }
+}
+
+
+/* Липкое меню */
+
+@media screen and (min-width: 769px) {
+    .myheader {
+        &.sticky {
+            transition: background-color 1s linear;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background-color: rgba($color: #000000, $alpha: 0.5);
+            & ul {
+                & li {
+                    & a {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+    .header__top-info-bg.sticpad {
+        padding-bottom: 82.67px;
+    }
+}
+
+
+/* Бургер меню */
+
+.menu {
+    display: none;
+    transition: all 0.5s ease-out;
+    color: #000;
+    font-family: Noto Sans Rejang;
+    font-size: 18rem / $rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0em;
+    text-align: left;
+    cursor: pointer;
+    margin: 0 auto;
+    padding-left: 1.25em;
+    position: absolute;
+    width: 10px;
+    height: 15px;
+    top: 40px;
+    right: 55px;
+    z-index: 1000;
+    @media screen and (max-width: 769px) {
+        display: block;
+    }
+    & .menu-global {
+        backface-visibility: hidden;
+        position: absolute;
+        left: 0;
+        border-top: 3px solid #000;
+        width: 100%;
+        transition: 0.55s;
+        &.menu-top-click {
+            border-top: 3px solid #000;
+        }
+        &.menu-bottom-click {
+            border-top: 3px solid #000;
+        }
+    }
+    &.wi {
+        transition: all 0.5s ease-out;
+        color: #000;
+    }
+}
+
+.menu-top {
+    top: 0;
+    & .menu-top-click {
+        backface-visibility: hidden;
+        top: 10px;
+        transform: rotate(50deg);
+        transition: 0.55s 0.5s;
+    }
+}
+
+.menu-middle {
+    top: 10px;
+}
+
+.menu-bottom {
+    top: 20px;
+}
+
+.menu-top-click {
+    backface-visibility: hidden;
+    top: 10px;
+    transform: rotate(50deg);
+    transition: 0.55s 0.5s;
+}
+
+.menu-middle-click {
+    opacity: 0;
+}
+
+.menu-bottom-click {
+    color: #000;
+    backface-visibility: hidden;
+    top: 10px;
+    transform: rotate(-410deg);
+    transition: 0.55s 0.5s;
+}

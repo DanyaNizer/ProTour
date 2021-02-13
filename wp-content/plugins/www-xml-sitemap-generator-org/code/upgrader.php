@@ -11,7 +11,7 @@ class upgrader
 	
 	public static function checkUpgrade()
 	{
-		$current_update = 00001;
+		$current_update = 00002;
 		$installed_Update =  get_option( "xmsg_Update"   , 00000  );
 		
 		if ($installed_Update < $current_update )
@@ -31,6 +31,11 @@ class upgrader
 			$wpdb->query($cmd);
 		}
 		
+		if ($installed_Update < 00002)
+		{
+			$cmd = "UPDATE {$tablemeta} ADD COLUMN news  not null default 0 ";
+			$wpdb->query($cmd);
+		}
 	}
 
 	

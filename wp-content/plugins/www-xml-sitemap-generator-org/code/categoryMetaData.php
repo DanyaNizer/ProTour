@@ -28,7 +28,6 @@ class categoryMetaData
 		if ( !current_user_can( 'manage_categories') )
 		return $term_id;
 
- 
 	 	$settings = new metaSettings();
 		
 		$settings->id =  ( isset( $_POST['wpXSG-metaId'] ) ?  $_POST['wpXSG-metaId'] : '0' );
@@ -38,11 +37,9 @@ class categoryMetaData
 	 	$settings->priority = ( isset( $_POST['wpXSG-Priority'] ) ?  $_POST['wpXSG-Priority'] : 'default' );
 	  	$settings->frequency = ( isset( $_POST['wpXSG-Frequency'] ) ?  $_POST['wpXSG-Frequency'] : 'default' );
 		$settings->inherit = ( isset( $_POST['wpXSG-Inherit'] ) ?  $_POST['wpXSG-Inherit'] : 0 );
-			
+		$settings->news = ( isset( $_POST['wpXSG-News'] ) ?  $_POST['wpXSG-News'] : 0 );
 		dataAccess::saveMetaItem($settings );
 
-		
-	
 	}
 	
 	
@@ -51,9 +48,10 @@ class categoryMetaData
 	{
 		self::addHooks();
 			
-		$settings = new metaSettings(1,1,1);
+		$settings = new metaSettings(1,1,1,0);
+		$globalSettings =   core::getGlobalSettings();
 		
-	  wp_nonce_field( basename( __FILE__ ), 'wpXSG_meta_nonce' );
+		wp_nonce_field( basename( __FILE__ ), 'wpXSG_meta_nonce' );
 		?>
  
 	<h3>Sitemap settings</h3>
@@ -85,13 +83,23 @@ class categoryMetaData
 		<select  name="wpXSG-Inherit" id="wpXSG-Inherit" ></select>
 		<p>Immediate child posts/pages inherit these settings.</p>
 	</div>
+
+		<?php if ($globalSettings->newsMode == '2') {   ?>
+		<div class="form-field term-description-wrap">
+		 <label for="description">Include in news</label> 
+			<td>
+			<select  name="wpXSG-News" id="wpXSG-News" ></select>
+			<p>Include this category/tag in news feeds.</p>
+		</div>
+	<?php } ?>
 	
-<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>scripts.js"></script>
+<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>assets/scripts.js"></script>
 <script>
   xsg_populate("wpXSG-Exclude" ,excludeSelect, <?php echo $settings->exclude  ?>);
   xsg_populate("wpXSG-Priority" ,prioritySelect, <?php echo $settings->priority  ?>);
   xsg_populate("wpXSG-Frequency" ,frequencySelect, <?php echo $settings->frequency  ?>);
   xsg_populate("wpXSG-Inherit" ,inheritSelect, <?php echo $settings->inherit  ?>);
+  xsg_populate("wpXSG-News" ,newsSelect, <?php echo $settings->news ?>);
 </script>
 		
 		<?php
@@ -104,7 +112,7 @@ class categoryMetaData
 		self::addHooks();
 		
 		$settings =  dataAccess::getMetaItem($term_id , "taxonomy");  
- 
+		$globalSettings =   core::getGlobalSettings();
 	 
 			wp_nonce_field( basename( __FILE__ ), 'wpXSG_meta_nonce' );
 		?>
@@ -130,28 +138,38 @@ class categoryMetaData
 				<p>Relative priority for this category/tag and related posts.</p>
 			</td>
 		</tr>
-		<tr class="form-field term-description-wrap">
+		<tr class="form-field">
 			<th scope="row"><label for="description">Update frequency</label></th>
 			<td>
 			<select  name="wpXSG-Frequency" id="wpXSG-Frequency" ></select>
 			<p>Sitemap update frequency for this category/tag.</p>
 			</td>
 		</tr>
-		<tr class="form-field term-description-wrap">
+		<tr class="form-field">
 			<th scope="row"><label for="description">Post inheritance</label></th>
 			<td>
 			<select  name="wpXSG-Inherit" id="wpXSG-Inherit" ></select>
 			<p>Immediate child posts/pages inherit these settings.</p>
 			</td>
 		</tr>
+		<?php if ($globalSettings->newsMode == '2') {   ?>
+		<tr class="form-field">
+			<th scope="row"><label for="description">Include in news</label></th>
+			<td>
+			<select  name="wpXSG-News" id="wpXSG-News" ></select>
+			<p>Include this category/tag in news feeds.</p>
+			</td>
+		</tr>
+	<?php } ?>
 		</tbody></table>
 
-<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>scripts.js"></script>
+<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>assets/scripts.js"></script>
 <script>
   xsg_populate("wpXSG-Exclude" ,excludeSelect, <?php echo $settings->exclude  ?>);
   xsg_populate("wpXSG-Priority" ,prioritySelect, <?php echo $settings->priority  ?>);
   xsg_populate("wpXSG-Frequency" ,frequencySelect, <?php echo $settings->frequency  ?>);
   xsg_populate("wpXSG-Inherit" ,inheritSelect, <?php echo $settings->inherit  ?>);
+  xsg_populate("wpXSG-News" ,newsSelect, <?php echo $settings->news ?>);
 </script>
 
 
@@ -159,11 +177,6 @@ class categoryMetaData
 	
 	}
  
-
-
-		
- 
-
 }
 
 ?>

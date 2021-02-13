@@ -88,7 +88,7 @@ class authorMetaData
 
 		</tbody></table>
 
-<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>scripts.js"></script>
+<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>assets/scripts.js"></script>
 <script>
   xsg_populate("wpXSG-Exclude" ,excludeSelect, <?php echo $settings->exclude  ?>);
   xsg_populate("wpXSG-Priority" ,prioritySelect, <?php echo $settings->priority  ?>);

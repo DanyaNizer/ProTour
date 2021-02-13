@@ -1,0 +1,270 @@
+/* main_scss
+ * --------------------------------------- */
+
+@font-face {
+    font-family: "Proxima-Regular";
+    src: url("../font/ProximaNova-RegularIt.ttf");
+}
+
+@font-face {
+    font-family: "Proxima-Bold";
+    src: url("../font/ProximaNovaExCn-Bold.ttf");
+}
+
+.slick {
+    margin-bottom: -29px;
+    &__slider {}
+    &__block {
+        position: relative;
+        & .glek-bg {
+            width: 100%;
+            height: 100%;
+            background-color: rgba($color: #000000, $alpha: 0.4);
+        }
+        & .sblock-btndown {
+            position: absolute;
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Proxima-Regular";
+            text-align: center;
+            @media screen and (max-width: 769px) {
+                display: none;
+            }
+            & h3 {
+                font-size: 44rem / $rem;
+                text-decoration: none;
+                color: #fff;
+                width: 100%;
+            }
+            & p {
+                font-size: 44rem / $rem;
+                text-decoration: none;
+                color: #fff;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                animation: 2s ease-in-out infinite pulse;
+                @keyframes pulse {
+                    0% {
+                        top: 5px;
+                    }
+                    50% {
+                        top: 15px;
+                    }
+                    100% {
+                        top: 5px;
+                    }
+                }
+            }
+            & p img {
+                height: auto;
+                width: 45px;
+                filter: invert(100%);
+            }
+        }
+        & img {
+            object-fit: cover;
+            width: 100%;
+            height: calc(100vh - 100px);
+            filter: brightness(0.5);
+        }
+        & .min-he {
+            min-height: 750px;
+            @media screen and (max-width: 769px) {
+                min-height: 150px;
+            }
+        }
+        & h3 {
+            position: absolute;
+            z-index: 10000;
+            font-size: 90rem / $rem;
+            color: #fff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Proxima-Regular";
+            color: #fff;
+        }
+        & h4 {
+            position: absolute;
+            z-index: 10000;
+            font-size: 60rem / $rem;
+            color: #fff;
+            left: 50%;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: "Proxima-Regular";
+            color: #fff;
+        }
+    }
+}
+
+.background-wpap {
+    background-image: url("../Img/pexels-photo-1122408.jpeg");
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+.rewies {
+    max-width: 60%;
+    min-width: 280px;
+    margin: 20px auto;
+    padding-bottom: 20px;
+    h2 {
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 0% !important;
+        font-size: 60rem / $rem !important;
+    }
+    & .slick-list {
+        border-radius: 10px;
+    }
+    & .slick-dots {
+        bottom: 5%;
+    }
+    .slick-slide {
+        text-align: center;
+        background: rgba(0, 0, 0, 0.4);
+    }
+    .slider__block {
+        max-width: 920px !important;
+    }
+    .text-center {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        height: 300px;
+    }
+    .text-center p {
+        color: #fff;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 24rem / $rem;
+        font-family: "Proxima-Regular";
+    }
+}
+
+#ittHS .itt_hs_name {
+    font-size: 45px !important;
+    line-height: 80px !important;
+}
+
+#ittHSinfo .itt_hi_close svg {
+    right: 6px;
+}
+
+#ittHS .itt_bg_color .itt_hs_header {
+    background: #b8d0da;
+    border-radius: 10px;
+}
+
+.nicescrollht-cursors {
+    width: 10px !important;
+    left: 7px;
+}
+
+@media screen and (max-width: 1025px) {
+    .wrap h2 {
+        font-size: 40rem / $rem !important;
+    }
+    .text-center p {
+        font-size: 18rem / $rem !important;
+    }
+    .rewies .text-center {
+        height: 195px;
+    }
+    .background-wpap {
+        background-size: 150%;
+    }
+}
+
+@media screen and (max-width: 769px) {
+    .slick__block h4 {
+        font-size: 34rem / $rem;
+    }
+    .rewies .text-center {
+        height: 280px;
+    }
+}
+
+@media screen and (max-width: 426px) {
+    .wrap h2 {
+        font-size: 30rem / $rem !important;
+    }
+    .rewies {
+        min-width: 320px;
+    }
+    .rewies .text-center {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .slick__block h4 {
+        font-size: 28rem / $rem;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .slick__block h3 {
+        font-size: 30rem / $rem;
+    }
+    .slick__block h4 {
+        font-size: 20rem / $rem;
+    }
+    .slick__block .sblock-btndown p {
+        font-size: 30rem / $rem;
+    }
+    .background-wpap {
+        background-size: 400%;
+        background-position-y: 140%;
+    }
+    .rewies h2,
+    p {
+        color: white;
+    }
+}
+
+// Соц сети
+.soc {
+    width: 70%;
+    margin: 10px auto;
+    padding: 0 7%;
+    height: 70px;
+    border-radius: 20px;
+    border: solid #fff 1px;
+    background-color: rgba($color: #000000, $alpha: 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @media screen and (max-width: 500px) {
+        width: 80%;
+    }
+    &__text {
+        & p {
+            font-size: 25rem / $rem;
+            color: #fff;
+            font-family: "Proxima-Regular";
+        }
+    }
+    &__img {
+        display: flex;
+        & div {
+            width: 40px;
+            margin: 0 7px;
+            overflow: hidden;
+            & img {
+                filter: invert(1);
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+}

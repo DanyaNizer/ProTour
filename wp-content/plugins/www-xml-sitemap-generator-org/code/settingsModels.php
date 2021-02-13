@@ -40,6 +40,7 @@ class sitemapDefaults {
 
 class globalSettings {
 	
+	public $enableImages = false; // add images to the sitemap
 	public $addRssToHead = true;  // add recent files to Rss header
 	public $pingSitemap = true; // daily sitemap ping
 	public $addToRobots = true; // add files to robots
@@ -49,17 +50,23 @@ class globalSettings {
 	public $register = false;
 	
 	public $urlXmlSitemap = "xmlsitemap.xml";
+	public $urlNewsSitemap = "newssitemap.xml";
 	public $urlRssSitemap = "rsssitemap.xml";
 	public $urlRssLatest = "rsslatest.xml";
 	public $urlHtmlSitemap = "htmlsitemap.htm";
+	
+	public $newsMode = 0; // add news sitemap. 0 = disabled, 1 = all , 2 = selected categories.
+ 
 }
 
 class metaSettings
 {
-	function __construct($exclude1 = 1,$priority1 = 1,$frequency1 = 1, $inherit = 0) {
+	function __construct($exclude1 = 1,$priority1 = 1,$frequency1 = 1, $inherit1 = 0, $news1 = 0) {
 		$this->exclude = $exclude1;
 		$this->priority = $priority1;
 		$this->frequency = $frequency1;
+		$this->inherit = $inherit1;
+		$this->news = $news1;
 	}
  
 	public $id = 0;
@@ -70,7 +77,7 @@ class metaSettings
 	public $frequency = 1;
 	public $inherit = 0;
 	public $scheduled = 0;
-
+	public $news = 0;
 }	 
 
 

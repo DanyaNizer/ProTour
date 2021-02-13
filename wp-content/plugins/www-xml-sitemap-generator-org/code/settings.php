@@ -12,8 +12,11 @@ class settings
 	{
 		add_action('admin_menu', array(  __CLASS__, 'admin_menu' ) );
 		add_action('admin_init', array( __CLASS__, 'register_settings' ) );
+
 	}
 	
+
+
 	public static function admin_menu() 
 	{
 		add_options_page( 'XML Sitemap Settings','XML Sitemap','manage_options', XSG_PLUGIN_NAME , array( __CLASS__ , 'render' ) );
@@ -23,6 +26,8 @@ class settings
 	{
 		register_setting( XSG_PLUGIN_NAME, XSG_PLUGIN_NAME );
 	}
+
+ 
 
      static function getPostTypes()
 	{
@@ -76,6 +81,8 @@ class settings
 
 			$register = ( isset( $_POST['register'] ) ?  $_POST['register'] : 0 );
 			
+			$globalSettings->newsMode  = ( isset( $_POST['newsMode'] ) ?  $_POST['newsMode'] : 0 );
+			$globalSettings->enableImages  = ( isset( $_POST['enableImages'] ) ?  $_POST['enableImages'] : 0 );
 			$globalSettings->addRssToHead  = ( isset( $_POST['addRssToHead'] ) ?  $_POST['addRssToHead'] : 0 );
 			$globalSettings->pingSitemap = ( isset( $_POST['pingSitemap'] ) ?  $_POST['pingSitemap'] : 0 );
 			$globalSettings->addToRobots = ( isset( $_POST['addToRobots'] ) ?  $_POST['addToRobots'] : 0 );
@@ -84,7 +91,8 @@ class settings
 			$globalSettings->robotEntries = ( isset( $_POST['robotEntries'] ) ?  $_POST['robotEntries'] : "" );
 			$globalSettings->registerEmail = ( isset( $_POST['registerEmail'] ) ?  $_POST['registerEmail'] : "" );
 			
-			$globalSettings->urlXmlSitemap = ( isset( $_POST['urlXmlSitemap'] ) ?  $_POST['urlXmlSitemap'] : "xmlsitemap1.xml" );
+			$globalSettings->urlXmlSitemap = ( isset( $_POST['urlXmlSitemap'] ) ?  $_POST['urlXmlSitemap'] : "xmlsitemap.xml" );
+			$globalSettings->urlNewsSitemap = ( isset( $_POST['urlNewsSitemap'] ) ?  $_POST['urlNewsSitemap'] : "newssitemap.xml" );
 			$globalSettings->urlRssSitemap = ( isset( $_POST['urlRssSitemap'] ) ?  $_POST['urlRssSitemap'] : "rsssitemap.xml" );
 			$globalSettings->urlRssLatest = ( isset( $_POST['urlRssLatest'] ) ?  $_POST['urlRssLatest'] : "rsslatest.xml" );
 			$globalSettings->urlHtmlSitemap = ( isset( $_POST['urlHtmlSitemap'] ) ?  $_POST['urlHtmlSitemap'] : "htmlsitemap.htm" );
@@ -118,7 +126,10 @@ class settings
 			update_option( "wpXSG_global" ,  $globalSettings , true);	
 			update_option( "wpXSG_registered" ,  $register , true);
 			
-		flush_rewrite_rules();
+			
+			core::add_rewrite_rules();
+			flush_rewrite_rules();
+ 
 		
 		
 			$sitemapDefaults = new sitemapDefaults();
@@ -180,7 +191,6 @@ class settings
 
 	}
 	
-	
  
  
 	public static function render()
@@ -196,7 +206,9 @@ class settings
 		?>
 
 
-
+<style>
+	.defaultsList li {padding: 5px;}
+</style>
 		
 <form method="post"  > 
 
@@ -227,8 +239,9 @@ class settings
 			$url = get_bloginfo( 'url' ) ;
 		
 			echo '<li><a target="_blank" href="' . $url .'/' . $globalSettings->urlXmlSitemap . '">XML Sitemap</a></li>';
+			echo '<li><a target="_blank" href="' . $url .'/' . $globalSettings->urlNewsSitemap . '">XML News Sitemap</a></li>';
 			echo '<li><a target="_blank" href="' . $url .'/' . $globalSettings->urlRssSitemap . '">RSS Sitemap</a></li>';
-			echo '<li><a target="_blank" href="' . $url .'/' . $globalSettings->urlRssLatest . '">New Pages RSS</a></li>';
+			echo '<li><a target="_blank" href="' . $url .'/' . $globalSettings->urlRssLatest . '">RSS New Pages</a></li>';
 			echo '<li><a target="_blank" href="' . $url .'/' . $globalSettings->urlHtmlSitemap . '">HTML Sitemap</a></li>';
 			echo '<li><a target="_blank" href="' . $url .'/robots.txt">Robots.txt</a></li>';
 		
@@ -299,8 +312,8 @@ class settings
 				
 	<div class="meta-box-sortabless">
 
-			<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>scripts.js"></script>
-			
+			<script type="text/javascript" src="<?php echo xsgPluginPath(); ?>/assets/scripts.js"></script>
+		 
 			
 			
 	<div  class="postbox" <?php if (!get_option('wpXSG_registered')) {echo 'style="border-left:solid 4px #dc3232;"';} ?>">
@@ -339,20 +352,27 @@ class settings
 					<p>
 						<label for="email"   >XML Sitemap URL</label><br />
 						<input type="text" name="urlXmlSitemap" size="40" value="<?php echo core::safeRead($globalSettings,"urlXmlSitemap"); ?>" />
-					</p> 
+					</p>
+	
 					<p>
 						<label for="email"   >RSS Sitemap URL</label><br />
 						<input type="text" name="urlRssSitemap" size="40" value="<?php echo core::safeRead($globalSettings,"urlRssSitemap"); ?>" />
-					</p> 
-				</td><td>&nbsp;</td><td>
-					<p>
-						<label for="email"   >RSS Latest URLs</label><br />
-						<input type="text" name="urlRssLatest" size="40" value="<?php echo core::safeRead($globalSettings,"urlRssLatest"); ?>" />
-					</p> 
+					</p>
 					<p>
 						<label for="email"   >HTML Sitemap URL</label><br />
 						<input type="text" name="urlHtmlSitemap" size="40" value="<?php echo core::safeRead($globalSettings,"urlHtmlSitemap"); ?>" />
 					</p> 
+				</td><td>&nbsp;</td><td style="vertical-align:top">
+				<p>
+						<label for="email"   >XML News Sitemap URL</label><br />
+						<input type="text" name="urlNewsSitemap" size="40" value="<?php echo core::safeRead($globalSettings,"urlNewsSitemap"); ?>" />
+					</p>
+					<p>
+						<label for="email"   >RSS Latest URLs</label><br />
+						<input type="text" name="urlRssLatest" size="40" value="<?php echo core::safeRead($globalSettings,"urlRssLatest"); ?>" />
+					</p> 
+				
+
 				</td></tr></table>
 		</div>
 	</div> 
@@ -361,11 +381,19 @@ class settings
 		<h3 class="hndle"><span>General settings</span></h3>
 		<div class="inside">
 
-               
-				<p>General options for your sitemap. 
-				We recommend you enable all of these.</p>
+			
+					<ul class="defaultsList">
+					
+						<li>News sitemap : <input type="radio" name="newsMode" value="0" <?php checked($globalSettings->newsMode, '0'); ?>  > 
+							Disabled &nbsp;<input type="radio" name="newsMode" value="1" <?php checked($globalSettings->newsMode, '1'); ?> > 
+							Include all posts &nbsp;<input type="radio" name="newsMode" value="2" <?php checked($globalSettings->newsMode, '2'); ?> > Selected tags / categories 
+						</li>
+					
+						<li>
+							<input type="checkbox" name="enableImages" id="enableImages" value="1" <?php checked($globalSettings->enableImages, '1'); ?> /> 
+							<label for="sm_b_ping">Enable images in sitemap</label><br>
+						</li>
 
-					<ul>
 						<li>
 							<input type="checkbox" name="pingSitemap" id="pingSitemap" value="1" <?php checked($globalSettings->pingSitemap, '1'); ?> /> 
 							<label for="sm_b_ping">Automatically ping Google / Bing (MSN & Yahoo) daily</label><br>
@@ -382,14 +410,13 @@ class settings
 							<input type="checkbox" name="sendStats" id="sendStats" value="1" <?php checked($globalSettings->sendStats, '1'); ?> />
 							<label for="sm_b_ping">Help us improve by allowing basic usage stats (Page count, PHP Version, feature usage, etc.)</label><br>
 						</li>
-						<li>
-							<input type="checkbox" name="smallCredit" id="smallCredit" value="1" <?php checked($globalSettings->smallCredit, '1'); ?> />
-							<label for="sm_b_ping">Support us by allowing a small credit in the sitemap file footer (Does not appear on your website)</label><br>
-						</li>
 					</ul>
 		</div>
 	</div> 
 
+ 
+	
+		
 	<div  class="postbox">
 		<h3 class="hndle"><span>Sitemap defaults</span></h3>
 		<div class="inside">

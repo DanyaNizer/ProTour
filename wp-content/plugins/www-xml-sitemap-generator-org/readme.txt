@@ -3,8 +3,7 @@ Contributors: XmlSitemapGenerator
 Tags: google, google sitemaps, seo, xml sitemap
 Donate link: https://xmlsitemapgenerator.org/contribute/subscribeother.aspx?service=wordpress
 Requires at least: 4.0
-Tested up to: 5.4.0
-Stable tag: 1.3.5
+Tested up to: 5.6.1
 
 Improve your websites SEO with a comprehensive, easy to use RSS and XML sitemap plugin. Compatible with Google, Bing, Baidu, Yandex and more.
  
@@ -12,17 +11,23 @@ Improve your websites SEO with a comprehensive, easy to use RSS and XML sitemap 
 
 Improve your websites SEO (Search Engine Optimization) and SERP (Search Engine Page Ranking) using an XML Sitemap.
 
-Originally designed by Google, XML Sitemaps help search engines understand the content of your website, including Google, Bing, Baidu, Yandex and more
+XML Sitemaps, RSS feeds, etc. help search engines understand the content of your website, including Google, Bing, Baidu, Yandex and more
 
-[Google XML Sitemap Generator](https://xmlsitemapgenerator.org/wordpress-sitemap-generator-plugin.aspx) adds powerful and configurable RSS and XML sitemap features to your website. 
+[Google XML Sitemap Generator](https://xmlsitemapgenerator.org/wordpress-sitemap-generator-plugin.aspx) adds powerful and configurable HTML, RSS and XML sitemap features to your website. 
+
+The plugin supports sitemap index files for larger sites and the special News and Image sitemap formats to provide comprehensive coverage for your website.
 
 It works across your entire website creating a detailed sitemap, including all custom posts and taxonomy, which makes it a great companion for plugins such as WooCommerce, bbPress, BuddyPress and more.
 
 A distinct advantage of this plugin is the ability to edit your sitemap defaults for taxonomy and post types, as well as being able to edit individual page and post settings.
 
+UPGRADE NOTE - After upgrading, some users are reporting issues with the XML sitemap index file giving a 404 error/ redirecting to the homepage. If you have this issue please deactivate then reactive the plugin.  If you have any further issues please contact support.
+
 **Features include:**
 
 * HTML, RSS and Google XML Sitemap formats.
+* News sitemap and image sitemap support.
+* Sitemap index support for larger websites.
 * List all your WordPress Pages, Posts, Archives, Authors, Categories and Tags.
 * Support for custom post types and taxonomy.
 * Includes paged links for posts for Archives, Authors, Categories and Tags.
@@ -48,6 +53,10 @@ Very easy! Simply install via the wordpress plugin library and activate it.
 Go to the XML sitemap settings page and if we alert you to any problems with permalinks, etc. follow the simple instructions to fix these.
 
 That's it, you're up and running.
+
+= Do you support the special images and news sitemap formats? =
+
+Yes. Both are available simply enable them in the settings.
 
 = Where can I find my sitemap / robots.txt files? =
 
@@ -107,19 +116,42 @@ You should now be up and running, but you may also want to :
 
 == Screenshots ==
 
-1. Global sitemap settings
-2. Post / page sitemap settings
-3. Category / tag settings
-4. XML Sitemap page
-5. Sitemap entries in Robots.txt
-
+1. Global sitemap settings 1 
+2. Global sitemap settings 2
+3. Edit settings per category / tag
+4. Edit settings per post / page
+5. XML Sitemap index page
+6. XML Sitemap news page
+7. XML sitemap page with images
+8. Sitemap entries in Robots.txt
 
 == Changelog ==
+
+
+= 2.0.1 =
+Release Date: February 11th, 2021
+* Fix : Activation issue
+* Fix : Sitemap index "Invalid content" issue
+* Fix : Exclude setting not working.
+
+= 2.0.0 =
+Release Date: February 7th, 2021
+
+* New : Tested up to WordPress 5.6.1
+* New : Support for sitemap index files
+* New : Support for image sitemaps
+* New : Support for news sitemaps
+* New : Support for larger sitemaps
+* New : Rearchitected to improve maintainability and performance
+* Fix : Incorrect robots.txt entries
+* Fix : Category / Tag editing fields
+
+UPGRADE NOTE - After upgrading, some users are reporting issues with the XML sitemap index file giving a 404 error/ redirecting to the homepage. If you have this issue please deactivate then reactive the plugin.  If you have any further issues please contact support.
 
 = 1.3.5 =
 Release Date: July 11th, 2020
 
-* New : Tested up to wordpress 5.4.
+* New : Tested up to WordPress 5.4.
 * New : Edit the sitemap filenames
 * New : Set sitemap values per author/user.
 * New : Include scheduled posts.

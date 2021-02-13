@@ -2,13 +2,14 @@
 
 namespace xmlSitemapGenerator;
 
+include_once 'dataAccess.php';
 include_once 'settingsModels.php';
 include_once 'upgrader.php';
 
-	define ( "XSG_PLUGIN_VERSION" , "1.3.5");
+
+
+	define ( "XSG_PLUGIN_VERSION" , "2.0.0");
 	define ( "XSG_PLUGIN_NAME" , "www-xml-sitemap-generator-org"); 
-	define ( "XSG_RULES_VERSION" , "0003"); // increment this if the rewrite rules ever change.
-	define ( "XSG_RULES_OPTION_NAME" , "wpXSG_rewrite_done"); 
 	define ( "XSG_DONATE_URL","https://XmlSitemapGenerator.org/contribute/subscribeOther.aspx?service=wordpress");
 // settings for general operation and rendering
 
@@ -40,6 +41,7 @@ class core {
 
 		// ensure when we read the global settings we have urls assigned
 		$globalSettings->urlXmlSitemap = self::safeRead2($globalSettings,"urlXmlSitemap","xmlsitemap.xml");
+		$globalSettings->urlNewsSitemap = self::safeRead2($globalSettings,"urlNewsSitemap","newssitemap.xml");
 		$globalSettings->urlRssSitemap = self::safeRead2($globalSettings,"urlRssSitemap","rsssitemap.xml");
 		$globalSettings->urlRssLatest = self::safeRead2($globalSettings,"urlRssLatest","rsslatest.xml");
 		$globalSettings->urlHtmlSitemap = self::safeRead2($globalSettings,"urlHtmlSitemap","htmlsitemap.htm"); 
@@ -51,29 +53,24 @@ class core {
 	{
 		self::addDatabaseTable();
 
-		self::addRewriteHooks();
-		self::activateRewriteRules();
-		flush_rewrite_rules();
-		
+		self::add_rewrite_rules();
+	    flush_rewrite_rules();
+	
 		add_option( "wpXSG_MapId", uniqid("",true) );
 		update_option( "xmsg_LastPing", 0 );
 		
 		self::updateStatistics("Plugin","Activate", "");
-		
 
 	}
 	
-	// used when a new blog is created in a network site.
-	function activate_new_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) 
-	{
-				switch_to_blog($blog_id);
-				self::doSiteActivation();
-				restore_current_blog();	
-	}
 	
 	public static function activatePlugin($network_wide){
 		if ( is_multisite() && $network_wide ) { 
-
+		
+                if ( false == is_super_admin() ) {
+                    return;
+                }
+				
 			global $wpdb;
 
 			foreach ($wpdb->get_col("SELECT blog_id FROM $wpdb->blogs") as $blog_id) {
@@ -86,7 +83,6 @@ class core {
 			self::doSiteActivation();
 
 		}
-	
 
 	}
 	public static function activated($plugin) 
@@ -98,9 +94,9 @@ class core {
 	}
 	
 	public static function deactivatePlugin() {
-		delete_option("wpXMSG_rewrite_done");
 		self::updateStatistics("Plugin","Deactivate","");
 	}
+
 	
 	public static function checkUpgrade()
 	{
@@ -120,14 +116,21 @@ class core {
 		} else {
 			upgrader::checkUpgrade();
 		}
-		
+
 	}
-	
 	
 	public static function initialisePlugin() 
 	{
 
+ 		self::add_rewrite_rules();
+ 
+		add_filter('query_vars', array(__CLASS__, 'add_query_variables'), 1, 1);
+		add_filter('template_redirect', array(__CLASS__, 'templateRedirect'), 1, 0);
+		
+		// disable wordpress sitemap
+		remove_action( 'init', 'wp_sitemaps_get_server' );
 	
+ 
 	// 2 is required for $file to be populated
 		add_filter('plugin_row_meta', array(__CLASS__, 'filter_plugin_row_meta'),10,2);
 		add_action('do_robots', array(__CLASS__, 'addRobotLinks'), 100, 0);
@@ -147,12 +150,8 @@ class core {
 			authorMetaData::addHooks();
 			
 			add_action('admin_notices', array(__CLASS__, 'showWarnings'));
-			
- 
 		}
 
-	
-		
 		if (!wp_get_schedule('xmsg_ping')) 
 		{
 			// ping in 2 hours from when setup.
@@ -161,13 +160,32 @@ class core {
 
 		add_action('xmsg_ping', array(__CLASS__, 'doPing'));
 		
-		// NB Network activation will not have set up the rules for the site.
-		// Check if they exist and then reactivate.
-		if (get_option(XSG_RULES_OPTION_NAME, null) != XSG_RULES_VERSION) 
-		{
-			add_action('wp_loaded', array(__CLASS__, 'activateRewriteRules'), 99999, 1);
-		}
-		
+	}
+
+	public static function getRewriteUrl($property)
+	{
+		$url = self::getGlobalProperty($property);
+		$url = str_replace(".","\.",$url) . '$';
+		return $url;
+	}
+	
+	public static function add_rewrite_rules()
+	{
+
+		add_rewrite_rule(self::getRewriteUrl("urlXmlSitemap"), 'index.php?xsg-format=xml&xsg-provider=index&xsg-type=index&xsg-page=1','top');
+		add_rewrite_rule(self::getRewriteUrl("urlNewsSitemap"),'index.php?xsg-format=news&xsg-provider=news&xsg-type=news&xsg-page=1','top');
+		add_rewrite_rule(self::getRewriteUrl("urlRssSitemap"), 'index.php?xsg-format=rss&xsg-provider=index&xsg-type=index&xsg-page=1','top');
+		add_rewrite_rule(self::getRewriteUrl("urlRssLatest"), 'index.php?xsg-format=rss&xsg-provider=latest&xsg-type=latest&xsg-page=1','top');
+		add_rewrite_rule(self::getRewriteUrl("urlHtmlSitemap"),'index.php?xsg-format=htm&xsg-provider=index&xsg-type=index&xsg-page=1','top');
+		add_rewrite_rule("sitemap-files/([a-z]+)/([a-z]+)/([^/]+)/([0-9]+)/?", 'index.php?xsg-format=$matches[1]&xsg-provider=$matches[2]&xsg-type=$matches[3]&xsg-page=$matches[4]&','top');
+	}
+
+	public static function add_query_variables($vars) {
+		array_push($vars, 'xsg-format');
+		array_push($vars, 'xsg-provider');
+		array_push($vars, 'xsg-type');
+		array_push($vars, 'xsg-page');
+		return $vars;
 	}
 
 	static function showWarnings()
@@ -192,8 +210,6 @@ class core {
 				echo '<div id="sitemap-warnings" class="error fade"><p><strong>Problems that will prevent your sitemap working correctly :</strong></p>' . $warnings . '</div>';
 			}
 			
-	 
-			
 		}
 		
 	}
@@ -215,7 +231,7 @@ class core {
 	{
 		try 
 		{
-			include_once 'dataAccess.php';
+			
 			dataAccess::createMetaTable();
 			update_option( "wpXSG_databaseUpgraded" ,  1 , false);
 		} 
@@ -224,25 +240,73 @@ class core {
 
 		}
 	}
-	public static function addQueryVariableHooks(){ 
-		add_filter('query_vars', array(__CLASS__, 'addQueryVariables'), 1, 1);
-		add_filter('template_redirect', array(__CLASS__, 'templateRedirect'), 1, 0);
+ 
+	private static function readQueryVar($name)
+	{	global $wp_query;
+		if(!empty($wp_query->query_vars[$name]))
+		{
+			return $wp_query->query_vars[$name];
+		}	
+		return null;
 	}
-	public static function addQueryVariables($vars) {
-		array_push($vars, 'xml-sitemap');
-		return $vars;
-	}
+	
+
+	
 	public static function templateRedirect() {
-		global $wp_query;
-		if(!empty($wp_query->query_vars["xml-sitemap"])) {
+	
+		$format= self::readQueryVar("xsg-format");	
+		$provider= self::readQueryVar("xsg-provider");	
+		$type= self::readQueryVar("xsg-type");	
+		$page= self::readQueryVar("xsg-page");	
 		
+	//	echo var_dump($format);
+	//	exit;
+		
+		if($format !=null && $provider != null && $type !=null && $page !=null) 
+		{
+	
+			global $wp_query;			
+			global $wp;
+			
 			$wp_query->is_404 = false;
 			$wp_query->is_feed = false;
-			include_once 'sitemapBuilder.php';
-			$builder = new sitemapBuilder();
-			$builder->render($wp_query->query_vars["xml-sitemap"]); //$wp_query->query_vars["xml-sitemap"]
+			
+		 	self::render($format, $provider,  $type,  $page); 	
+			exit;	
+			
 		}
 	}
+	
+	public static function render($format, $provider, $type, $page) 
+	{		 
+			$startTime =  microtime(true) ;
+		
+			include_once 'renderers/coreRenderer.php';
+			include_once 'providers/coreProvider.php';
+
+			$providerInstance = sitemapProvider::getInstance($provider);
+			$renderer = sitemapRenderer::getInstance($format);
+			
+			if ($providerInstance == null ||$renderer == null) 
+			{ 
+				echo 'XML Sitemap Generator Error. <br />no provider or renderer loaded'; 
+				exit;
+			}
+			
+			$providerInstance->setFormat($format);
+			
+			$urls = $providerInstance->getPage($type, $page);
+			
+			if ($provider == "index")
+				{ $renderer->renderIndex($urls);}
+			else
+				{$renderer->renderPages($urls);}
+			
+			$time = core::getTimeBand($startTime);
+		 	core::updateStatistics("Render", "Render" . $format, $time);
+		
+	}
+
  
 	public static function addRobotLinks() 
 	{
@@ -250,9 +314,12 @@ class core {
 	 	if($globalSettings->addToRobots == true) 
 	 	{
 			$base = trailingslashit( get_bloginfo( 'url' ) );
-			echo "\nSitemap: " . $base . "xmlsitemap.xml\n";
-			echo "\nAllow: /rsssitemap.xml";
-			echo "\nAllow: /htmlsitemap.htm";
+			echo "\nSitemap: " . $base . self::getGlobalProperty("urlXmlSitemap") . "\n";
+			
+			echo "\nAllow: /" . self::getGlobalProperty("urlRssSitemap");
+			echo "\nAllow: /" . self::getGlobalProperty("urlRssLatest");
+			echo "\nAllow: /" . self::getGlobalProperty("urlHtmlSitemap");
+
 	 	}
 		echo "\n\n";
 		echo self::safeRead($globalSettings,"robotEntries");
@@ -269,40 +336,16 @@ class core {
 			echo $link;
 		}
 	}	
-	public static function addRewriteHooks() {
-		add_filter('rewrite_rules_array', array(__CLASS__, 'getRewriteRules'), 1, 1);
-	}
+ 
 	
-
-	
-	
-	private static function getRewriteUrl($property)
+	public static function getGlobalProperty($property)
 	{
 		$globalSettings = self::getGlobalSettings();
-		$url = self::safeRead( $globalSettings, $property);
-		$url = str_replace(".","\.",$url) . '$';
-		return $url;
+		$value = self::safeRead( $globalSettings, $property);
+		return $value;		
 	}
 
-	public static function getRewriteRules($originalRules) {
-	
-		$newRules = array();
-	
-		$newRules[self::getRewriteUrl("urlXmlSitemap")] = 'index.php?xml-sitemap=xml';  
-		$newRules[self::getRewriteUrl("urlRssSitemap")] = 'index.php?xml-sitemap=rss';  
-		$newRules[self::getRewriteUrl("urlRssLatest")] = 'index.php?xml-sitemap=rssnew';  
-		$newRules[self::getRewriteUrl("urlHtmlSitemap")] = 'index.php?xml-sitemap=html';  
-		$newRules['xmlsitemap\.xsl$'] = 'index.php?xml-sitemap=xsl';  
-		return array_merge($newRules,$originalRules);
-	}
-	
-	
-	public static function activateRewriteRules() {
-		/** @var $wp_rewrite WP_Rewrite */
-		global $wp_rewrite;
-		$wp_rewrite->flush_rules(false);
-		update_option(XSG_RULES_OPTION_NAME, XSG_RULES_VERSION);
-	}
+
 	
 	static function filter_plugin_row_meta($links, $file) {
 		$plugin  = self::pluginFilename();
@@ -319,7 +362,32 @@ class core {
 		}
 		return $links;
 	}
+	
+	private static function getCacheFile($cacheKey)
+	{
+		$file = str_replace('code','cache', __DIR__  ) . '\\' . $cacheKey . '.json';
+		return $file;
+	}
+	public static function getCacheObject($cacheKey)
+	{
+		$cacheFile = self::getCacheFile($cacheKey);
+		$cacheDuration = time() - (60 * 5 ); // 5 minute cache
+		if ( file_exists($cacheFile) && (filemtime($cacheFile) > $cacheDuration) )
+		{
+		   $file = file_get_contents($cacheFile);
+			return json_decode($file);		   
+		}
+	}
+	
+	public static function setCacheObject($cacheKey, $object)
+	{
+		$cacheFile = self::getCacheFile($cacheKey);
 
+		file_put_contents($cacheFile , json_encode($object), LOCK_EX);	
+	
+		exit;		
+	}
+	
 	static function getStatusHtml()
 	{
 		$array = get_option('xmsg_Log',"");

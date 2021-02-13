@@ -1,0 +1,173 @@
+@font-face {
+    font-family: "Proxima-Regular";
+    src: url("../font/ProximaNova-RegularIt.ttf");
+}
+
+.background-contact {
+    background: url("../contact/img/fon.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    @media screen and (max-width: 1441px) {
+        background-size: 110%;
+    }
+    @media screen and (max-width: 1025px) {
+        background-size: 135%;
+    }
+    @media screen and (max-width: 769px) {
+        background-size: 170%;
+    }
+    @media screen and (max-width: 426px) {
+        background-size: 290%;
+    }
+    @media screen and (max-width: 376px) {
+        background-size: 310%;
+    }
+    @media screen and (max-width: 321px) {
+        background-size: 365%;
+    }
+}
+
+.contact {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    .contact-text {
+        font-family: "Proxima-Regular";
+        & a {
+            text-decoration: none;
+            color: #000;
+            font-family: "Proxima-Regular";
+        }
+    }
+    .contact-face {
+        font-size: 40rem / $rem;
+        margin-bottom: 2%;
+        @media screen and (max-width: 426px) {
+            font-size: 30rem / $rem;
+        }
+        @media screen and (max-width: 321px) {
+            font-size: 20rem / $rem;
+        }
+        & a {
+            color: #000;
+            font-size: 40rem / $rem;
+            font-family: "Proxima-Regular";
+            @media screen and (max-width: 426px) {
+                font-size: 30rem / $rem;
+            }
+            @media screen and (max-width: 321px) {
+                font-size: 20rem / $rem;
+            }
+        }
+    }
+    .contact-social {
+        display: flex;
+        flex-direction: column;
+        & p {
+            color: #000;
+            font-size: 40rem / $rem;
+            margin-bottom: 2%;
+            font-family: "Proxima-Regular";
+            @media screen and (max-width: 426px) {
+                font-size: 30rem / $rem;
+            }
+            @media screen and (max-width: 321px) {
+                font-size: 20rem / $rem;
+            }
+        }
+        & a {
+            color: #000;
+            font-size: 40rem / $rem;
+            margin-bottom: 2%;
+            font-family: "Proxima-Regular";
+            @media screen and (max-width: 426px) {
+                font-size: 30rem / $rem;
+            }
+            @media screen and (max-width: 321px) {
+                font-size: 20rem / $rem;
+            }
+        }
+    }
+    .contact-phone {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2%;
+        & img {
+            height: auto;
+            width: 50px;
+            margin: 0 0.5% 0 0.5%;
+            @media screen and (max-width: 426px) {
+                width: 40px;
+            }
+            @media screen and (max-width: 321px) {
+                width: 25px;
+            }
+        }
+        & a {
+            color: #000;
+            font-size: 40rem / $rem;
+            font-family: "Proxima-Regular";
+            @media screen and (max-width: 426px) {
+                font-size: 30rem / $rem;
+            }
+            @media screen and (max-width: 321px) {
+                font-size: 20rem / $rem;
+                color: #fff;
+            }
+        }
+        & p {
+            color: #000;
+            font-size: 40rem / $rem;
+            font-family: "Proxima-Regular";
+            @media screen and (max-width: 426px) {
+                font-size: 30rem / $rem;
+            }
+            @media screen and (max-width: 321px) {
+                font-size: 20rem / $rem;
+                color: #fff;
+            }
+        }
+    }
+    .contact-qr {
+        margin-bottom: 20%;
+        @media screen and (max-width: 426px) {
+            margin-bottom: 45%;
+        }
+        @media screen and (max-width: 321px) {
+            font-size: 20rem / $rem;
+            color: #fff;
+        }
+        & img {
+            height: auto;
+            width: 200px;
+            border: 15px solid #fff;
+            border-radius: 10px;
+        }
+    }
+    .qr-info {
+        font-size: 30rem / $rem;
+        margin-bottom: 1%;
+        font-family: "Proxima-Regular";
+    }
+}
+
+.contact-map {
+    border: 2px solid #000;
+    position: relative;
+}
+
+.camel-img {
+    width: 100%;
+    text-align: right;
+    position: absolute;
+    bottom: 99.7%;
+    right: -0.1%;
+    img {
+        max-width: 30%;
+        height: auto;
+        @media screen and (max-width: 426px) {
+            max-width: 50%;
+        }
+    }
+}
