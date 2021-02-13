@@ -15,26 +15,22 @@
 
 get_header();
 ?>
+<!--* Тело сайта -->
+<main class="main">
+    <div class="backgound-minprice">
+        <div class="wrap">
+            <div class="minprice">
+                <div class="minprice__main-text">
+                    <h2>Заголовк</h2>
+                    <h3>Очень интересный и продающий текст</h3>
+                </div>
+                <div id="itTourPriceWidgetWrapper"></div>
+                <script id="itTourPriceWidgetScript" enableBuy="false" viewType="undefined" priceButton="undefined" widgetZIndex="10" activeTab="tour" lang="ru" currency_uah="1" showcase_number="1" charset="utf-8" theme="https://ittour.com.ua/classes/handlers/ittour_external_modules/ittour_modules/min_price_v2/min_price/css/gray.css" src="https://ittour.com.ua/classes/handlers/ittour_external_modules/ittour_modules/min_price_v2/min_price/js/widget.js?token=3D71275913467G5122878N91" module_paysystem="liqpay" paysystem_client_pay="0" paysystem_commission=""></script>
+            </div>
+        </div>
+    </div>
+</main>
 
-<main id="primary" class="site-main">
-   <h1>hello samp</h1>
-
-   <?php
-   while (have_posts()) :
-      the_post();
-
-      get_template_part('template-parts/content', 'page');
-
-      // If comments are open or we have at least one comment, load up the comment template.
-      if (comments_open() || get_comments_number()) :
-         comments_template();
-      endif;
-
-   endwhile; // End of the loop.
-   ?>
-
-</main><!-- #main -->
 
 <?php
-get_sidebar();
 get_footer();
